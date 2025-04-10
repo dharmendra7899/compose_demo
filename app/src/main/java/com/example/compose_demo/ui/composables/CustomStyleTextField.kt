@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +30,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
@@ -39,14 +42,16 @@ import com.example.compose_demo.R
 
 
 /**
- * @Created by akash on 21-11-2024.
- * Know more about author at https://akash.cloudemy.in
+ * @Created by Dharmendra Kumar on 10-04-2025.
+ * Custom text field with leading and trailing icons.
  */
 @Composable
 fun CustomStyleTextField(
     placeHolder: String,
     leadingIconId: ImageVector,
     keyboardType: KeyboardType,
+    keyboardCapitalization: KeyboardCapitalization,
+    imeAction: ImeAction,
     visualTransformation: VisualTransformation,
     textState: TextFieldValue,
     onValueChanged: (TextFieldValue) -> Unit
@@ -56,13 +61,17 @@ fun CustomStyleTextField(
 
     OutlinedTextField(
         modifier = Modifier
-            .height(50.dp) //
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp)),
         value = textState,
         singleLine = true,
+        keyboardOptions = KeyboardOptions.Default.copy(
+            capitalization = keyboardCapitalization,
+            autoCorrectEnabled = true,
+            keyboardType = keyboardType,
+            imeAction = imeAction
+        ),
         onValueChange = onValueChanged,
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         placeholder = { Text(text = placeHolder) },
         leadingIcon = {
             Row(

@@ -1,8 +1,8 @@
 package com.example.compose_demo.util
 
 /**
- * Created by akash on 23/11/2024.
- * Know more about author on <a href="https://akash.cloudemy.in">...</a>
+ * @Created by Dharmendra Kumar on 10-04-2025.
+ * here you can add your api url or any other constant values.
  */
 object Constants {
 

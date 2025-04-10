@@ -54,20 +54,28 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.constraintlayout.compose)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.ui)
+    implementation(libs.material3)
+    implementation(libs.androidx.navigation.compose.v260)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.foundation)
 
-//
+    //dagger-hilt
 //    implementation(libs.hilt.android)
 //    kapt(libs.hilt.android.compiler)
-   // implementation(libs.androidx.navigation.compose)
+
+
+    //hilt navigation compose
+    implementation(libs.androidx.hilt.navigation.fragment)
 
     //retrofit connection
     implementation(libs.retrofit)

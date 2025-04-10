@@ -3,76 +3,59 @@ package com.example.compose_demo.module.auth
 import android.widget.Toast
 import com.example.compose_demo.R
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavHostController
 import com.example.compose_demo.ui.composables.CustomStyleTextField
 
 @Composable
-fun LoginPage() {
+fun LoginPage(navController: NavHostController) {
 
-    Scaffold {
+
+    Scaffold { paddingValues ->
         val context = LocalContext.current
         var isTermsAccepted by remember { mutableStateOf(false) }
+
         Column(
             modifier = Modifier
-                .padding(it)
+                .padding(paddingValues)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             Image(
                 modifier = Modifier
-                    .fillMaxHeight(.3f)
-
-                    .fillMaxWidth(.6f),
+                    .fillMaxHeight(.25f)
+                    .fillMaxWidth(.7f),
                 painter = painterResource(id = R.drawable.login_bg),
                 contentDescription = "logo"
             )
 
             Card(
                 shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp),
-                modifier = Modifier.fillMaxHeight(1f)
-                    .padding(top = 20.dp).verticalScroll(rememberScrollState()),
+                modifier = Modifier
+                    .fillMaxHeight(1f)
+                    .padding(top = 20.dp)
+                    .verticalScroll(rememberScrollState()),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
             ) {
                 val mobileState = remember { mutableStateOf(TextFieldValue("")) }
@@ -92,31 +75,42 @@ fun LoginPage() {
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
+
+
                     Text(
                         text = "Mobile Number*",
                         style = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.padding(bottom = 5.dp, top = 10.dp)
                     )
 
+
+
+
                     CustomStyleTextField(
                         placeHolder = "Mobile Number",
                         leadingIconId = Icons.Default.Phone,
                         keyboardType = KeyboardType.Phone,
+                        keyboardCapitalization = KeyboardCapitalization.None,
+                        imeAction = ImeAction.Next,
                         visualTransformation = VisualTransformation.None,
                         mobileState.value
                     ) {
                         mobileState.value = it
                     }
 
+
                     Text(
                         text = "Password*",
                         style = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.padding(bottom = 5.dp, top = 20.dp)
                     )
+
                     CustomStyleTextField(
                         placeHolder = "Password",
                         leadingIconId = Icons.Default.Lock,
                         keyboardType = KeyboardType.Password,
+                        keyboardCapitalization = KeyboardCapitalization.None,
+                        imeAction = ImeAction.Done,
                         visualTransformation = PasswordVisualTransformation(),
                         textState = passTextState.value
                     ) {
@@ -126,11 +120,33 @@ fun LoginPage() {
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .clickable {
+                                navController.navigate("forgot_password")
+                            }
                             .padding(top = 10.dp),
                         text = "Forgot Password?",
                         textAlign = TextAlign.End,
                         style = MaterialTheme.typography.labelLarge
                     )
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(25.dp)
+                            .align(alignment = Alignment.Start)
+                    ) {
+                        Checkbox(
+                            checked = isTermsAccepted,
+                            onCheckedChange = { isTermsAccepted = it }
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("I accept the Terms and Conditions")
+                    }
+
+                    // Login button
                     ElevatedButton(
                         onClick = {
                             if (mobileState.value.text.isEmpty()) {
@@ -145,8 +161,14 @@ fun LoginPage() {
                                     "Please enter your password",
                                     Toast.LENGTH_SHORT
                                 ).show()
+                            } else if (!isTermsAccepted) {
+                                Toast.makeText(
+                                    context,
+                                    "Please accept terms and conditions",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             } else {
-                                //navigate to your screen
+                                //   navController.navigate("home")
                             }
                         },
                         modifier = Modifier
@@ -166,8 +188,15 @@ fun LoginPage() {
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable {
+                                navController.navigate("signUp")
+                            },
                         contentAlignment = Alignment.BottomCenter
                     ) {
                         val signInText = "Don't have an account? Sign Up"
@@ -192,29 +221,16 @@ fun LoginPage() {
 
                         Text(
                             modifier = Modifier
-                                .padding(bottom = 20.dp), // Ensure it's 20dp from the bottom
+                                .padding(bottom = 10.dp),
                             text = signInAnnotatedString,
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Center
                         )
                     }
-
                 }
             }
-
-
-
         }
+
+
     }
-
 }
-
-
-//                    Row(modifier= Modifier.fillMaxWidth()) {
-//                        Checkbox(
-//                            checked = isTermsAccepted,
-//                            onCheckedChange = { isTermsAccepted = it }
-//                        )
-//                        Spacer(modifier = Modifier.width(8.dp))
-//                        Text("I accept the Terms and Conditions")
-//                    }
