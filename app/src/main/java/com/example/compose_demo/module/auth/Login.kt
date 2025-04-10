@@ -9,7 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
@@ -60,6 +59,13 @@ fun LoginPage(navController: NavHostController) {
             ) {
                 val mobileState = remember { mutableStateOf(TextFieldValue("")) }
                 val passTextState = remember { mutableStateOf(TextFieldValue("")) }
+
+                var mobErrorMessage by remember { mutableStateOf("") }
+                var passwordErrorMessage by remember { mutableStateOf("") }
+
+                val mobileRegex = "^[6-9]\\d{9}$".toRegex()
+                val passwordRegex =
+                    """^(?=.*[A-Z])(?=.*[\W_])(?=.*\d)[A-Za-z\d\W_]{8,}$""".toRegex()
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -72,6 +78,7 @@ fun LoginPage(navController: NavHostController) {
                         text = "Log in to your account.",
                         textAlign = TextAlign.Center,
                         fontSize = 20.sp,
+
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
@@ -93,9 +100,22 @@ fun LoginPage(navController: NavHostController) {
                         keyboardCapitalization = KeyboardCapitalization.None,
                         imeAction = ImeAction.Next,
                         visualTransformation = VisualTransformation.None,
-                        mobileState.value
-                    ) {
-                        mobileState.value = it
+                        textState = mobileState.value,
+                        onValueChanged = { newValue ->
+                            val filteredText = newValue.text.filter { it.isDigit() }
+                            if (filteredText.length <= 10) {
+                                mobileState.value = newValue
+                                mobErrorMessage = ""
+                            }
+                        }
+                    )
+                    if (mobErrorMessage.isNotEmpty()) {
+                        Text(
+                            text = mobErrorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
                     }
 
 
@@ -112,9 +132,22 @@ fun LoginPage(navController: NavHostController) {
                         keyboardCapitalization = KeyboardCapitalization.None,
                         imeAction = ImeAction.Done,
                         visualTransformation = PasswordVisualTransformation(),
-                        textState = passTextState.value
-                    ) {
-                        passTextState.value = it
+                        textState = passTextState.value,
+                        onValueChanged = { newValue ->
+
+
+                            passTextState.value = newValue
+                            passwordErrorMessage = ""
+
+                        }
+                    )
+                    if (passwordErrorMessage.isNotEmpty()) {
+                        Text(
+                            text = passwordErrorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
                     }
 
                     Text(
@@ -146,21 +179,14 @@ fun LoginPage(navController: NavHostController) {
                         Text("I accept the Terms and Conditions")
                     }
 
-                    // Login button
                     ElevatedButton(
                         onClick = {
-                            if (mobileState.value.text.isEmpty()) {
-                                Toast.makeText(
-                                    context,
-                                    "Please enter your mobile",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else if (passTextState.value.text.isEmpty()) {
-                                Toast.makeText(
-                                    context,
-                                    "Please enter your password",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                            if (!mobileRegex.matches(mobileState.value.text)) {
+                                mobErrorMessage =
+                                    "Please enter a valid 10 digit mobile number starting from 6 to 9."
+                            } else if (!passwordRegex.matches(passTextState.value.text)) {
+                                passwordErrorMessage =
+                                    "Password must be at least 8 characters long, with at least one uppercase letter, one number, and one special character."
                             } else if (!isTermsAccepted) {
                                 Toast.makeText(
                                     context,
@@ -168,7 +194,7 @@ fun LoginPage(navController: NavHostController) {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                //   navController.navigate("home")
+                                navController.navigate("dashboard")
                             }
                         },
                         modifier = Modifier

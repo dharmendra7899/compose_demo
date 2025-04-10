@@ -1,10 +1,12 @@
 package com.example.compose_demo.ui.composables
 
+import android.R.attr.maxLength
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -56,49 +57,37 @@ fun CustomStyleTextField(
     textState: TextFieldValue,
     onValueChanged: (TextFieldValue) -> Unit
 ) {
-
-    var textTransformation by remember(visualTransformation) { mutableStateOf(visualTransformation) }
+    var textTransformation by remember { mutableStateOf(visualTransformation) }
 
     OutlinedTextField(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp)),
         value = textState,
         singleLine = true,
+        onValueChange = onValueChanged,
         keyboardOptions = KeyboardOptions.Default.copy(
             capitalization = keyboardCapitalization,
             autoCorrectEnabled = true,
             keyboardType = keyboardType,
             imeAction = imeAction
         ),
-        onValueChange = onValueChanged,
         placeholder = { Text(text = placeHolder) },
         leadingIcon = {
             Row(
-                modifier = Modifier.wrapContentWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                content = {
-                    Image(
-                        modifier = Modifier
-                            .padding(start = 10.dp, end = 10.dp)
-                            .size(18.dp),
-                        imageVector = leadingIconId,  // material icon
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                        contentDescription = "custom_text_field"
-                    )
-                    Canvas(
-                        modifier = Modifier.height(24.dp)
-                    ) {
-                        // Allows you to draw a line between two points (p1 & p2) on the canvas.
-                        drawLine(
-                            color = Color.LightGray,
-                            start = Offset(0f, 0f),
-                            end = Offset(0f, size.height),
-                            strokeWidth = 2.0F
-                        )
-                    }
-                }
-            )
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .padding(start = 10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    modifier = Modifier
+                        .size(18.dp),
+                    imageVector = leadingIconId,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                    contentDescription = "leading_icon"
+                )
+            }
         },
         trailingIcon = if (visualTransformation == PasswordVisualTransformation()) {
             {
@@ -109,9 +98,14 @@ fun CustomStyleTextField(
                 }) {
                     Image(
                         modifier = Modifier.size(24.dp),
-                        painter = painterResource(if (textTransformation == PasswordVisualTransformation()) R.drawable.baseline_visibility_24 else R.drawable.baseline_visibility_off_24),  // material icon
+                        painter = painterResource(
+                            if (textTransformation == PasswordVisualTransformation())
+                                R.drawable.baseline_visibility_24
+                            else
+                                R.drawable.baseline_visibility_off_24
+                        ),
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                        contentDescription = "custom_text_field"
+                        contentDescription = "visibility_toggle"
                     )
                 }
             }
@@ -126,6 +120,6 @@ fun CustomStyleTextField(
         textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 16.sp),
         visualTransformation = textTransformation
     )
-
 }
+
 

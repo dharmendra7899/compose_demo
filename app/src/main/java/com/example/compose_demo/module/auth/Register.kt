@@ -87,6 +87,17 @@ fun RegisterPage(navController: NavHostController) {
                 val emailTextState = remember { mutableStateOf(TextFieldValue("")) }
                 val passTextState = remember { mutableStateOf(TextFieldValue("")) }
                 val conPassTextState = remember { mutableStateOf(TextFieldValue("")) }
+                var mobErrorMessage by remember { mutableStateOf("") }
+                var passwordErrorMessage by remember { mutableStateOf("") }
+                var nameErrorMessage by remember { mutableStateOf("") }
+                var emailErrorMessage by remember { mutableStateOf("") }
+                var conPasswordErrorMessage by remember { mutableStateOf("") }
+
+                val mobileRegex = "^[6-9]\\d{9}$".toRegex()
+                val passwordRegex =
+                    """^(?=.*[A-Z])(?=.*[\W_])(?=.*\d)[A-Za-z\d\W_]{8,}$""".toRegex()
+                val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$".toRegex()
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -115,9 +126,21 @@ fun RegisterPage(navController: NavHostController) {
                         keyboardCapitalization = KeyboardCapitalization.Words,
                         imeAction = ImeAction.Next,
                         visualTransformation = VisualTransformation.None,
-                        textState = fullNameState.value
-                    ) {
-                        fullNameState.value = it
+                        textState = fullNameState.value,
+                        onValueChanged = { newValue ->
+
+                            fullNameState.value = newValue
+                            nameErrorMessage = ""
+
+                        }
+                    )
+                    if (nameErrorMessage.isNotEmpty()) {
+                        Text(
+                            text = nameErrorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
                     }
 
                     Text(
@@ -133,10 +156,24 @@ fun RegisterPage(navController: NavHostController) {
                         keyboardCapitalization = KeyboardCapitalization.None,
                         imeAction = ImeAction.Next,
                         visualTransformation = VisualTransformation.None,
-                        textState = mobileState.value
-                    ) {
-                        mobileState.value = it
+                        textState = mobileState.value,
+                        onValueChanged = { newValue ->
+                            val filteredText = newValue.text.filter { it.isDigit() }
+                            if (filteredText.length <= 10) {
+                                mobileState.value = newValue
+                                mobErrorMessage = ""
+                            }
+                        }
+                    )
+                    if (mobErrorMessage.isNotEmpty()) {
+                        Text(
+                            text = mobErrorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
                     }
+
 
                     Text(
                         text = "Email Address*",
@@ -151,9 +188,19 @@ fun RegisterPage(navController: NavHostController) {
                         keyboardCapitalization = KeyboardCapitalization.None,
                         imeAction = ImeAction.Next,
                         visualTransformation = VisualTransformation.None,
-                        textState = emailTextState.value
-                    ) {
-                        emailTextState.value = it
+                        textState = emailTextState.value,
+                        onValueChanged = { newValue ->
+                            emailTextState.value = newValue
+                            emailErrorMessage = ""
+                        }
+                    )
+                    if (emailErrorMessage.isNotEmpty()) {
+                        Text(
+                            text = emailErrorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
                     }
 
                     Text(
@@ -166,12 +213,23 @@ fun RegisterPage(navController: NavHostController) {
                         leadingIconId = Icons.Default.Lock,
                         keyboardType = KeyboardType.Password,
                         keyboardCapitalization = KeyboardCapitalization.None,
-                        imeAction = ImeAction.Next,
+                        imeAction = ImeAction.Done,
                         visualTransformation = PasswordVisualTransformation(),
-                        textState = passTextState.value
-                    ) {
-                        passTextState.value = it
+                        textState = passTextState.value,
+                        onValueChanged = { newValue ->
+                            passTextState.value = newValue
+                            passwordErrorMessage = ""
+                        }
+                    )
+                    if (passwordErrorMessage.isNotEmpty()) {
+                        Text(
+                            text = passwordErrorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
                     }
+
 
                     Text(
                         text = "Confirm Password*",
@@ -185,9 +243,19 @@ fun RegisterPage(navController: NavHostController) {
                         keyboardCapitalization = KeyboardCapitalization.None,
                         imeAction = ImeAction.Done,
                         visualTransformation = PasswordVisualTransformation(),
-                        textState = conPassTextState.value
-                    ) {
-                        conPassTextState.value = it
+                        textState = conPassTextState.value,
+                        onValueChanged = { newValue ->
+                            conPassTextState.value = newValue
+                            conPasswordErrorMessage = ""
+                        }
+                    )
+                    if (conPasswordErrorMessage.isNotEmpty()) {
+                        Text(
+                            text = conPasswordErrorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
                     }
                     Spacer(modifier = Modifier.height(30.dp))
 
@@ -209,16 +277,26 @@ fun RegisterPage(navController: NavHostController) {
 
                     ElevatedButton(
                         onClick = {
-                            if (emailTextState.value.text.isEmpty()) {
+                            if (fullNameState.value.text.isEmpty()) {
+                                nameErrorMessage =
+                                    "Please enter your full name."
+                            }else if (!mobileRegex.matches(mobileState.value.text)) {
+                            mobErrorMessage =
+                                "Please enter a valid 10 digit mobile number starting from 6 to 9."
+                        } else if (!emailRegex.matches(emailTextState.value.text)) {
+                                emailErrorMessage =
+                                    "Please enter valid email address."
+
+                            } else if (!passwordRegex.matches(passTextState.value.text)) {
+                                passwordErrorMessage =
+                                    "Password must be at least 8 characters long, with at least one uppercase letter, one number, and one special character."
+                            } else if (passTextState.value.text != conPassTextState.value.text) {
+                                conPasswordErrorMessage =
+                                    "Password and confirm password did not matched."
+                            } else if (!isTermsAccepted) {
                                 Toast.makeText(
                                     context,
-                                    "Please enter your mobile",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else if (passTextState.value.text.isEmpty()) {
-                                Toast.makeText(
-                                    context,
-                                    "Please enter your password",
+                                    "Please accept terms and conditions",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
