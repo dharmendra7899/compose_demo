@@ -63,13 +63,14 @@ fun ForgotPassword(navController: NavHostController) {
 
 
             ConstraintLayout(
-                modifier = Modifier.fillMaxHeight(0.4f).fillMaxWidth(1f)
+                modifier = Modifier
+                    .fillMaxHeight(0.4f)
+                    .fillMaxWidth(1f)
             ) {
                 val (image, backButton) = createRefs()
 
                 Image(
                     modifier = Modifier
-
                         .fillMaxWidth(0.7f)
                         .constrainAs(image) {
                             top.linkTo(parent.top)
@@ -92,17 +93,16 @@ fun ForgotPassword(navController: NavHostController) {
                     colors = CardDefaults.cardColors(
                         containerColor = Color.White
                     ),
-                    elevation = CardDefaults.elevatedCardElevation(3 .dp)
+                    elevation = CardDefaults.elevatedCardElevation(2.dp)
                 ) {
                     IconButton(onClick = { navController.navigate("login") }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back",
-                            tint = Color.Gray,
+                        Image(
                             modifier = Modifier
-                                .padding(6.dp)
-                                .align(alignment = Alignment.CenterHorizontally)
+                                .size(25.dp),
+                            painter = painterResource(id = R.drawable.ic_bb),
+                            contentDescription = "logo"
                         )
+
                     }
                 }
             }

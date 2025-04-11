@@ -32,7 +32,7 @@ fun LoginPage(navController: NavHostController) {
 
     Scaffold { paddingValues ->
         val context = LocalContext.current
-        var isTermsAccepted by remember { mutableStateOf(false) }
+        var isTermsAccepted by remember { mutableStateOf(true) }
 
         Column(
             modifier = Modifier
@@ -57,8 +57,8 @@ fun LoginPage(navController: NavHostController) {
                     .verticalScroll(rememberScrollState()),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
             ) {
-                val mobileState = remember { mutableStateOf(TextFieldValue("")) }
-                val passTextState = remember { mutableStateOf(TextFieldValue("")) }
+                val mobileState = remember { mutableStateOf(TextFieldValue("9876546354")) }
+                val passTextState = remember { mutableStateOf(TextFieldValue("Test@123#")) }
 
                 var mobErrorMessage by remember { mutableStateOf("") }
                 var passwordErrorMessage by remember { mutableStateOf("") }
@@ -89,7 +89,6 @@ fun LoginPage(navController: NavHostController) {
                         style = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.padding(bottom = 5.dp, top = 10.dp)
                     )
-
 
 
 

@@ -22,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.compose_demo.navigation.Destinations
 
@@ -43,10 +42,11 @@ fun DashboardPage(mainNavController: NavHostController) {
             startDestination = Destinations.Home.route,
             Modifier.padding(it)
         ) {
-            composable(Destinations.Home.route) { Text("home") }
-            composable(Destinations.LatestJob.route) { Text("latest_job") }
-            composable(Destinations.Category.route) { Text("category") }
-            composable(Destinations.Setting.route) { Text("setting") }
+
+            composable(Destinations.Home.route) { HomePage() }
+            composable(Destinations.LatestJob.route) { LatestJobPage() }
+            composable(Destinations.Category.route) { CategoryPage() }
+            composable(Destinations.Setting.route) { SettingPage() }
         }
 
 

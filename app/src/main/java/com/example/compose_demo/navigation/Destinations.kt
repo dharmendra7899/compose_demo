@@ -17,10 +17,10 @@ sealed class Destinations(val route: String, val label: String, val icon: Int? =
 
     //BottomAppBar Destinations
     data object Dashboard : Destinations("dashboard", "Dashboard")
-    data object Home : Destinations("home", "Home", icon = R.drawable.home)
-    data object LatestJob : Destinations("latest_job", "Latest Job", icon = R.drawable.job)
-    data object Category : Destinations("category", "Category", icon = R.drawable.category)
-    data object Setting : Destinations("setting", "Setting", icon = R.drawable.setting)
+    data object Home : Destinations("home", "Home", icon = R.drawable.ic_bottom_home)
+    data object LatestJob : Destinations("latest_job", "Latest Job", icon = R.drawable.ic_bottom_latest)
+    data object Category : Destinations("category", "Category", icon = R.drawable.ic_bottom_category)
+    data object Setting : Destinations("setting", "Setting", icon = R.drawable.ic_bottom_settings)
 
 }
 
